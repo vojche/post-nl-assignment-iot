@@ -1,0 +1,61 @@
+# CodeBuild BuildSpec for Integration Test Stage
+# 
+# Performs:
+# - Install dependencies
+# - Run integration tests against acceptance environment
+# - Verify Lambda function execution
+# - Verify S3 operations
+# - Verify DynamoDB operations
+# - Verify SNS publication
+# - Generate test reports
+#
+# **Validates: Requirements 12.4, 13.3, 13.6, 13.7, 13.8**
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 24
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+      
+  pre_build:
+    commands:
+      - echo "Setting up test environment..."
+      - export AWS_REGION=${AWS_REGION:-eu-west-1}
+      - export ENVIRONMENT=${ENVIRONMENT:-acceptance}
+      - echo "Testing against environment: $ENVIRONMENT"
+      
+  build:
+    commands:
+      - echo "Running integration tests..."
+      - npm test -- --testPathPattern="integration" --verbose
+      - echo "Verifying Lambda function..."
+      - aws lambda invoke --function-name iot-proximity-batch-processor-$ENVIRONMENT --payload '{"processingDate":"2024-01-15"}' response.json
+      - cat response.json
+      - echo "Verifying S3 buckets..."
+      - aws s3 ls s3://iot-proximity-events-$AWS_ACCOUNT_ID-$ENVIRONMENT/ || echo "Event bucket not yet populated"
+      - aws s3 ls s3://iot-proximity-reports-$AWS_ACCOUNT_ID-$ENVIRONMENT/ || echo "Report bucket not yet populated"
+      - echo "Verifying DynamoDB table..."
+      - aws dynamodb describe-table --table-name Vehicle2HandheldTable-$ENVIRONMENT
+      - echo "Integration tests completed"
+      
+  post_build:
+    commands:
+      - echo "Generating test report..."
+      - npm run test:report || true
+      - echo "Integration test stage completed"
+
+artifacts:
+  files:
+    - response.json
+    - coverage/**/*
+    - test-results/**/*
+
+reports:
+  integration-test-reports:
+    files:
+      - 'test-results/**/*.xml'
+    file-format: 'JUNITXML'

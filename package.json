@@ -1,0 +1,64 @@
+{
+  "name": "iot-proximity-alert-system",
+  "version": "1.0.0",
+  "description": "IoT Proximity Alert System - AWS CDK Infrastructure and Lambda Functions",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:report": "jest --coverage --coverageReporters=html",
+    "lint": "tsc --noEmit",
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "synth": "cdk synth",
+    "data:populate": "ts-node scripts/populate-test-data.ts",
+    "data:generate-events": "ts-node scripts/generate-test-events.ts",
+    "data:simulate-iot": "ts-node scripts/simulate-iot-devices.ts",
+    "report:generate": "ts-node scripts/generate-html-report.ts",
+    "load-test:baseline": "artillery run load-tests/baseline-load.yml --output load-tests/baseline-report.json",
+    "load-test:medium": "artillery run load-tests/medium-load.yml --output load-tests/medium-report.json",
+    "load-test:high": "artillery run load-tests/high-load.yml --output load-tests/high-report.json",
+    "load-test:spike": "artillery run load-tests/spike-test.yml --output load-tests/spike-report.json",
+    "load-test:validate": "ts-node load-tests/validate-load-test.ts"
+  },
+  "keywords": [
+    "iot",
+    "aws",
+    "cdk",
+    "proximity",
+    "lambda"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.10.2",
+    "aws-cdk": "^2.172.0",
+    "aws-sdk-client-mock": "^4.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.1024.0",
+    "@aws-sdk/client-dynamodb": "^3.709.0",
+    "@aws-sdk/client-iot-data": "^3.709.0",
+    "@aws-sdk/client-s3": "^3.709.0",
+    "@aws-sdk/client-sns": "^3.709.0",
+    "@aws-sdk/client-sqs": "^3.1024.0",
+    "@aws-sdk/lib-dynamodb": "^3.709.0",
+    "@aws-sdk/util-dynamodb": "^3.996.2",
+    "aws-cdk-lib": "^2.172.0",
+    "aws-xray-sdk-core": "^3.12.0",
+    "constructs": "^10.4.2",
+    "fast-check": "^3.23.1",
+    "source-map-support": "^0.5.21"
+  }
+}

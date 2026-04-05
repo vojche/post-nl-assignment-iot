@@ -1,0 +1,50 @@
+# Artillery Load Test - Spike Test
+#
+# Simulates:
+# - Sudden increase from 100 to 1000 vehicles over 1 minute
+# - Maintain 1000 vehicles for 5 minutes
+# - Gradual decrease back to 100 over 2 minutes
+# - Expected: System scales automatically, no failures
+#
+# **Validates: Requirements 14.1, 14.2**
+
+config:
+  target: "https://{{ $processEnvironment.IOT_ENDPOINT }}"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Baseline"
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 100
+      name: "Spike up"
+    - duration: 300
+      arrivalRate: 100
+      name: "Peak load"
+    - duration: 120
+      arrivalRate: 100
+      rampTo: 10
+      name: "Ramp down"
+  processor: "./load-test-processor.js"
+  variables:
+    vehicleCount: 1000
+    handheldCount: 500
+
+scenarios:
+  - name: "Vehicle GPS Updates"
+    weight: 67
+    flow:
+      - function: "generateVehicleEvent"
+      - publish:
+          topic: "v1/gps/vehicle/{{ vehicleId }}"
+          payload: "{{ vehicleEvent }}"
+      - think: 30
+
+  - name: "Handheld GPS Updates"
+    weight: 33
+    flow:
+      - function: "generateHandheldEvent"
+      - publish:
+          topic: "v1/gps/handheld/{{ handheldId }}"
+          payload: "{{ handheldEvent }}"
+      - think: 10

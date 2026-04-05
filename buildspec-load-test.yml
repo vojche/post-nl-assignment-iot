@@ -1,0 +1,56 @@
+# CodeBuild BuildSpec for Load Test Stage
+# 
+# Performs:
+# - Install Artillery and dependencies
+# - Run baseline load test
+# - Validate results against thresholds
+# - Generate load test reports
+#
+# **Validates: Requirements 14.1, 14.2, 14.3, 14.4**
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 24
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+      - npm install -g artillery
+      - npm install @faker-js/faker
+      
+  pre_build:
+    commands:
+      - echo "Getting IoT endpoint..."
+      - export IOT_ENDPOINT=$(aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress --output text)
+      - echo "IoT Endpoint: $IOT_ENDPOINT"
+      - export ENVIRONMENT=${ENVIRONMENT:-acceptance}
+      
+  build:
+    commands:
+      - echo "Running baseline load test..."
+      - cd load-tests
+      - artillery run baseline-load.yml --output baseline-report.json
+      - echo "Validating baseline load test results..."
+      - npx ts-node validate-load-test.ts baseline-report.json baseline
+      - cd ..
+      
+  post_build:
+    commands:
+      - echo "Load test completed"
+      - echo "Generating HTML report..."
+      - cd load-tests
+      - artillery report baseline-report.json --output baseline-report.html || true
+      - cd ..
+
+artifacts:
+  files:
+    - load-tests/baseline-report.json
+    - load-tests/baseline-report.html
+
+reports:
+  load-test-reports:
+    files:
+      - 'load-tests/baseline-report.json'
+    file-format: 'JUNITXML'

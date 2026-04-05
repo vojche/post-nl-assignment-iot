@@ -1,0 +1,42 @@
+# Artillery Load Test - Medium Load (500 vehicles)
+#
+# Simulates:
+# - 500 vehicles sending GPS updates every 30 seconds
+# - 250 handhelds sending GPS updates every 10 seconds
+# - Duration: 10 minutes
+# - Expected: P95 latency < 2 seconds, error rate < 0.1%
+#
+# **Validates: Requirements 14.1, 14.2**
+
+config:
+  target: "https://{{ $processEnvironment.IOT_ENDPOINT }}"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 600
+      arrivalRate: 50
+      name: "Sustained load"
+  processor: "./load-test-processor.js"
+  variables:
+    vehicleCount: 500
+    handheldCount: 250
+
+scenarios:
+  - name: "Vehicle GPS Updates"
+    weight: 67
+    flow:
+      - function: "generateVehicleEvent"
+      - publish:
+          topic: "v1/gps/vehicle/{{ vehicleId }}"
+          payload: "{{ vehicleEvent }}"
+      - think: 30
+
+  - name: "Handheld GPS Updates"
+    weight: 33
+    flow:
+      - function: "generateHandheldEvent"
+      - publish:
+          topic: "v1/gps/handheld/{{ handheldId }}"
+          payload: "{{ handheldEvent }}"
+      - think: 10

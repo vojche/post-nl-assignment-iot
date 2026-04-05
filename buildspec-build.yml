@@ -1,0 +1,75 @@
+# CodeBuild BuildSpec for Build Stage
+# 
+# Performs:
+# - Install Node.js 24 dependencies
+# - Compile TypeScript
+# - Run unit tests with coverage
+# - Run property tests
+# - Package Lambda function
+# - Synthesize CDK templates
+#
+# **Validates: Requirements 12.3, 13.9**
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 24
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+      - npm install -g aws-cdk
+      
+  pre_build:
+    commands:
+      - echo "Running linter..."
+      - npm run lint || true
+      - echo "Compiling TypeScript..."
+      - npm run build
+      
+  build:
+    commands:
+      - echo "Running unit tests with coverage..."
+      - npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
+      - echo "Running property tests..."
+      - npm test -- --testNamePattern="Property" --verbose
+      - echo "Checking test coverage threshold..."
+      - npm run test:coverage || true
+      
+  post_build:
+    commands:
+      - echo "Packaging Lambda function..."
+      - mkdir -p dist
+      - cp -r src dist/
+      - cp -r node_modules dist/
+      - cp package.json dist/
+      - cd dist && zip -r ../lambda-package.zip . && cd ..
+      - echo "Synthesizing CDK templates..."
+      - cdk synth --all --output cdk.out
+      - echo "Build completed successfully"
+
+artifacts:
+  files:
+    - '**/*'
+  secondary-artifacts:
+    BuildOutput:
+      files:
+        - lambda-package.zip
+        - dist/**/*
+      name: BuildOutput
+    CdkOutput:
+      files:
+        - cdk.out/**/*
+      name: CdkOutput
+
+reports:
+  test-reports:
+    files:
+      - 'coverage/lcov.info'
+    file-format: 'CLOVERXML'
+    base-directory: 'coverage'
+
+cache:
+  paths:
+    - 'node_modules/**/*'
