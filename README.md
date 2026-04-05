@@ -2,6 +2,8 @@
 
 > AWS-based system for monitoring distance between delivery vehicles and handheld devices
 
+**Repository**: [github.com/vojche/post-nl-assignment-iot](https://github.com/vojche/post-nl-assignment-iot)
+
 [![Tests](https://img.shields.io/badge/tests-183%20passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/coverage-97.8%25-brightgreen)]()
 [![Node](https://img.shields.io/badge/node-24.x-blue)]()
@@ -9,7 +11,7 @@
 [![Property%20Tests](https://img.shields.io/badge/property%20tests-6%20suites-blue)]()
 [![Branch%20Coverage](https://img.shields.io/badge/branch%20coverage-93.8%25-green)]()
 [![Function%20Coverage](https://img.shields.io/badge/function%20coverage-100%25-brightgreen)]()
-
+[![GitHub](https://img.shields.io/badge/GitHub-vojche%2Fpost--nl--assignment--iot-blue?logo=github)](https://github.com/vojche/post-nl-assignment-iot)
 ## 📋 Table of Contents
 
 - [Overview](#overview)
@@ -45,8 +47,8 @@ This system extends PostNL's existing AWS IoT infrastructure to analyze the dist
 ### Installation
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd PostNLAssignmentIoT
+git clone https://github.com/vojche/post-nl-assignment-iot.git
+cd post-nl-assignment-iot
 
 # Install dependencies
 npm install
