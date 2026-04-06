@@ -100,11 +100,18 @@ export class CICDPipelineStack extends cdk.Stack {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
     });
 
-    // Allow CodeBuild to assume the CDK execution role for asset publishing
+    // Grant CodeBuild direct S3 permissions to CDK assets bucket
     buildProject.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ['sts:AssumeRole'],
-        resources: [`arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${this.region}`],
+        actions: [
+          's3:GetObject',
+          's3:PutObject',
+          's3:ListBucket',
+        ],
+        resources: [
+          `arn:aws:s3:::cdk-hnb659fds-assets-${this.account}-${this.region}`,
+          `arn:aws:s3:::cdk-hnb659fds-assets-${this.account}-${this.region}/*`,
+        ],
       })
     );
 
@@ -193,11 +200,6 @@ export class CICDPipelineStack extends cdk.Stack {
           project: buildProject,
           input: sourceOutput,
           outputs: [buildOutput, cdkOutput],
-          environmentVariables: {
-            CDK_EXEC_ROLE_ARN: {
-              value: `arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${this.region}`,
-            },
-          },
         }),
       ],
     });
@@ -318,6 +320,11 @@ export class CICDPipelineStack extends cdk.Stack {
       value: approvalTopic.topicArn,
       description: 'SNS topic for approval notifications',
       exportName: 'iot-proximity-approval-topic',
+    });
+
+    new cdk.CfnOutput(this, 'CodeBuildRoleArn', {
+      value: buildProject.role!.roleArn,
+      description: 'CodeBuild role ARN for bucket policy',
     });
   }
 }
