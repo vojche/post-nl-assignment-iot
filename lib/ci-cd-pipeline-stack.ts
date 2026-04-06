@@ -100,18 +100,11 @@ export class CICDPipelineStack extends cdk.Stack {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
     });
 
-    // Grant permissions to publish CDK assets
+    // Allow CodeBuild to assume the CDK execution role for asset publishing
     buildProject.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: [
-          's3:PutObject',
-          's3:GetObject',
-          's3:ListBucket',
-        ],
-        resources: [
-          `arn:aws:s3:::cdk-*-assets-${this.account}-${this.region}`,
-          `arn:aws:s3:::cdk-*-assets-${this.account}-${this.region}/*`,
-        ],
+        actions: ['sts:AssumeRole'],
+        resources: [`arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${this.region}`],
       })
     );
 
@@ -200,6 +193,11 @@ export class CICDPipelineStack extends cdk.Stack {
           project: buildProject,
           input: sourceOutput,
           outputs: [buildOutput, cdkOutput],
+          environmentVariables: {
+            CDK_EXEC_ROLE_ARN: {
+              value: `arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${this.region}`,
+            },
+          },
         }),
       ],
     });
@@ -216,12 +214,20 @@ export class CICDPipelineStack extends cdk.Stack {
           stackName: 'ExistingInfrastructureStack-acceptance',
           templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-acceptance.template.json'),
           adminPermissions: true,
+          cfnCapabilities: [
+            cdk.CfnCapabilities.NAMED_IAM,
+            cdk.CfnCapabilities.AUTO_EXPAND,
+          ],
         }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-acceptance',
           templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-acceptance.template.json'),
           adminPermissions: true,
+          cfnCapabilities: [
+            cdk.CfnCapabilities.NAMED_IAM,
+            cdk.CfnCapabilities.AUTO_EXPAND,
+          ],
           runOrder: 2,
         }),
       ],
@@ -273,12 +279,20 @@ export class CICDPipelineStack extends cdk.Stack {
           stackName: 'ExistingInfrastructureStack-production',
           templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-production.template.json'),
           adminPermissions: true,
+          cfnCapabilities: [
+            cdk.CfnCapabilities.NAMED_IAM,
+            cdk.CfnCapabilities.AUTO_EXPAND,
+          ],
         }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-production',
           templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-production.template.json'),
           adminPermissions: true,
+          cfnCapabilities: [
+            cdk.CfnCapabilities.NAMED_IAM,
+            cdk.CfnCapabilities.AUTO_EXPAND,
+          ],
           runOrder: 2,
         }),
       ],

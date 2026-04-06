@@ -40,15 +40,15 @@ phases:
       - cp package.json dist/
       - cd dist && zip -r ../lambda-package.zip . -x "*.test.*" "*.spec.*" && cd ..
       - echo "Synthesizing CDK templates for acceptance..."
-      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance
+      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance --role-arn $CDK_EXEC_ROLE_ARN
       - echo "Publishing acceptance assets to S3..."
-      - npx cdk-assets publish -p cdk.out.acceptance/ExistingInfrastructureStack-acceptance.assets.json
-      - npx cdk-assets publish -p cdk.out.acceptance/IoTProximityAlertStack-acceptance.assets.json
+      - npx cdk-assets publish -p cdk.out.acceptance/ExistingInfrastructureStack-acceptance.assets.json --role-arn $CDK_EXEC_ROLE_ARN
+      - npx cdk-assets publish -p cdk.out.acceptance/IoTProximityAlertStack-acceptance.assets.json --role-arn $CDK_EXEC_ROLE_ARN
       - echo "Synthesizing CDK templates for production..."
-      - cdk synth --all -c environment=production --output cdk.out.production
+      - cdk synth --all -c environment=production --output cdk.out.production --role-arn $CDK_EXEC_ROLE_ARN
       - echo "Publishing production assets to S3..."
-      - npx cdk-assets publish -p cdk.out.production/ExistingInfrastructureStack-production.assets.json
-      - npx cdk-assets publish -p cdk.out.production/IoTProximityAlertStack-production.assets.json
+      - npx cdk-assets publish -p cdk.out.production/ExistingInfrastructureStack-production.assets.json --role-arn $CDK_EXEC_ROLE_ARN
+      - npx cdk-assets publish -p cdk.out.production/IoTProximityAlertStack-production.assets.json --role-arn $CDK_EXEC_ROLE_ARN
       - echo "Organizing CDK outputs..."
       - mkdir -p cdk.out
       - cp -r cdk.out.acceptance/* cdk.out/
