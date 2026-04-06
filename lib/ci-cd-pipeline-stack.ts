@@ -100,6 +100,21 @@ export class CICDPipelineStack extends cdk.Stack {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
     });
 
+    // Grant permissions to publish CDK assets
+    buildProject.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          's3:PutObject',
+          's3:GetObject',
+          's3:ListBucket',
+        ],
+        resources: [
+          `arn:aws:s3:::cdk-*-assets-${this.account}-${this.region}`,
+          `arn:aws:s3:::cdk-*-assets-${this.account}-${this.region}/*`,
+        ],
+      })
+    );
+
     // Integration Test Project
     const integrationTestProject = new codebuild.PipelineProject(this, 'IntegrationTestProject', {
       projectName: 'iot-proximity-integration-tests',
