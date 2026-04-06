@@ -243,6 +243,9 @@ export class CICDPipelineStack extends cdk.Stack {
           extraInputs: [buildOutput],
           environmentVariables: {
             ENVIRONMENT: { value: 'acceptance' },
+            EVENT_BUCKET: { value: `iot-proximity-events-${this.account}-acceptance` },
+            REPORT_BUCKET: { value: `iot-proximity-reports-${this.account}-acceptance` },
+            TABLE_NAME: { value: 'Vehicle2HandheldTable-acceptance' },
           },
         }),
       ],

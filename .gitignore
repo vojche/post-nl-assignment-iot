@@ -48,3 +48,6 @@ coverage/
 proximity-report.html
 response.json
 *.zip
+
+# Presentation
+SOLUTION_PRESENTATION.md
