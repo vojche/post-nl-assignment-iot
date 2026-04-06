@@ -241,7 +241,7 @@ export class IoTProximityAlertStack extends cdk.Stack {
     // Determine Lambda code source
     const lambdaCode = lambdaCodeBucket && lambdaCodeKey
       ? lambda.Code.fromBucket(
-          s3.Bucket.fromBucketName(this, 'LambdaCodeBucket', lambdaCodeBucket),
+          s3.Bucket.fromBucketName(this, `LambdaCodeBucket-${environment}`, lambdaCodeBucket),
           lambdaCodeKey
         )
       : lambda.Code.fromAsset('./dist'); // Fallback for local deployments

@@ -217,9 +217,8 @@ export class CICDPipelineStack extends cdk.Stack {
           ],
           parameterOverrides: {
             LambdaCodeBucket: artifactBucket.bucketName,
-            LambdaCodeKey: buildOutput.objectKey + '/lambda-package.zip',
+            LambdaCodeKey: 'lambda-code/lambda-package.zip',
           },
-          extraInputs: [buildOutput],
           runOrder: 2,
         }),
       ],
@@ -287,9 +286,8 @@ export class CICDPipelineStack extends cdk.Stack {
           ],
           parameterOverrides: {
             LambdaCodeBucket: artifactBucket.bucketName,
-            LambdaCodeKey: buildOutput.objectKey + '/lambda-package.zip',
+            LambdaCodeKey: 'lambda-code/lambda-package.zip',
           },
-          extraInputs: [buildOutput],
           runOrder: 2,
         }),
       ],
