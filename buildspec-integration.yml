@@ -33,7 +33,7 @@ phases:
       - echo "Running integration tests..."
       - npm test -- --testPathPattern="integration" --verbose
       - echo "Verifying Lambda function..."
-      - aws lambda invoke --function-name iot-proximity-batch-processor-$ENVIRONMENT --payload '{"processingDate":"2024-01-15"}' response.json
+      - aws lambda invoke --function-name iot-proximity-batch-processor-$ENVIRONMENT --payload "{\"processingDate\":\"2024-01-15\"}" response.json
       - cat response.json
       - echo "Verifying S3 buckets..."
       - aws s3 ls s3://$EVENT_BUCKET/ || echo "Event bucket not yet populated"
