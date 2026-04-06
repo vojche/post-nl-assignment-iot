@@ -199,7 +199,7 @@ export class CICDPipelineStack extends cdk.Stack {
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_Existing_Infrastructure',
           stackName: 'ExistingInfrastructureStack-acceptance',
-          templatePath: cdkOutput.atPath('ExistingInfrastructureStack-acceptance.template.json'),
+          templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-acceptance.template.json'),
           adminPermissions: true,
           parameterOverrides: {
             environment: 'acceptance',
@@ -208,7 +208,7 @@ export class CICDPipelineStack extends cdk.Stack {
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-acceptance',
-          templatePath: cdkOutput.atPath('IoTProximityAlertStack-acceptance.template.json'),
+          templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-acceptance.template.json'),
           adminPermissions: true,
           parameterOverrides: {
             environment: 'acceptance',
@@ -262,7 +262,7 @@ export class CICDPipelineStack extends cdk.Stack {
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_Existing_Infrastructure',
           stackName: 'ExistingInfrastructureStack-production',
-          templatePath: cdkOutput.atPath('ExistingInfrastructureStack-production.template.json'),
+          templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-production.template.json'),
           adminPermissions: true,
           parameterOverrides: {
             environment: 'production',
@@ -271,7 +271,7 @@ export class CICDPipelineStack extends cdk.Stack {
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-production',
-          templatePath: cdkOutput.atPath('IoTProximityAlertStack-production.template.json'),
+          templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-production.template.json'),
           adminPermissions: true,
           parameterOverrides: {
             environment: 'production',
