@@ -40,7 +40,7 @@ phases:
       - cp package.json dist/
       - cd dist && zip -r ../lambda-package.zip . -x "*.test.*" "*.spec.*" && cd ..
       - echo "Uploading Lambda package to S3..."
-      - aws s3 cp lambda-package.zip s3://iot-proximity-pipeline-artifacts-$AWS_ACCOUNT_ID/lambda-code/lambda-package.zip
+      - aws s3 cp lambda-package.zip s3://${ARTIFACT_BUCKET}/lambda-code/lambda-package.zip
       - echo "Synthesizing CDK templates for acceptance..."
       - cdk synth --all -c environment=acceptance --output cdk.out.acceptance
       - echo "Synthesizing CDK templates for production..."

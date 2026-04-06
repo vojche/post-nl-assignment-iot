@@ -185,6 +185,11 @@ export class CICDPipelineStack extends cdk.Stack {
           project: buildProject,
           input: sourceOutput,
           outputs: [buildOutput, cdkOutput],
+          environmentVariables: {
+            ARTIFACT_BUCKET: {
+              value: artifactBucket.bucketName,
+            },
+          },
         }),
       ],
     });
@@ -313,11 +318,6 @@ export class CICDPipelineStack extends cdk.Stack {
       value: approvalTopic.topicArn,
       description: 'SNS topic for approval notifications',
       exportName: 'iot-proximity-approval-topic',
-    });
-
-    new cdk.CfnOutput(this, 'CodeBuildRoleArn', {
-      value: buildProject.role!.roleArn,
-      description: 'CodeBuild role ARN for bucket policy',
     });
   }
 }
