@@ -23,36 +23,26 @@ phases:
       
   pre_build:
     commands:
-      - echo "Running linter..."
-      - npm run lint || true
-      - echo "Compiling TypeScript..."
+      - echo "Compiling TypeScript and running type checks..."
       - npm run build
       
   build:
     commands:
-      - echo "Running unit tests with coverage..."
-      - npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
-      - echo "Running property tests..."
-      - npm test -- --testNamePattern="Property" --verbose
-      - echo "Checking test coverage threshold..."
-      - npm run test:coverage || true
+      - echo "Running all tests with coverage..."
+      - npm test -- --coverage --coverageReporters=text --coverageReporters=lcov --maxWorkers=50%
       
   post_build:
     commands:
       - echo "Packaging Lambda function..."
       - mkdir -p dist
       - cp -r src dist/
-      - cp -r node_modules dist/
       - cp package.json dist/
-      - cd dist && zip -r ../lambda-package.zip . && cd ..
-      - echo "Synthesizing CDK templates for acceptance..."
-      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance
-      - echo "Synthesizing CDK templates for production..."
-      - cdk synth --all -c environment=production --output cdk.out.production
-      - echo "Combining CDK outputs..."
-      - mkdir -p cdk.out
-      - cp -r cdk.out.acceptance/* cdk.out/
-      - cp -r cdk.out.production/* cdk.out/
+      - cd dist && npm ci --production && zip -r ../lambda-package.zip . -x "*.test.*" "*.spec.*" && cd ..
+      - echo "Synthesizing CDK templates..."
+      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance &
+      - cdk synth --all -c environment=production --output cdk.out.production &
+      - wait
+      - mkdir -p cdk.out && cp -r cdk.out.acceptance/* cdk.out/ && cp -r cdk.out.production/* cdk.out/
       - echo "Build completed successfully"
 
 artifacts:
