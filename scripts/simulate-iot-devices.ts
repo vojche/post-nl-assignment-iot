@@ -5,7 +5,7 @@
  * Useful for testing the real-time IoT → Firehose → S3 flow
  */
 
-import { IoTDataPlaneClient, PublishCommand } from '@aws-sdk/client-iot-data';
+import { IoTDataPlaneClient, PublishCommand } from '@aws-sdk/client-iot-data-plane';
 
 const NUM_DEVICES = parseInt(process.env.NUM_DEVICES || '10', 10);
 const INTERVAL_SECONDS = parseInt(process.env.INTERVAL_SECONDS || '15', 10);

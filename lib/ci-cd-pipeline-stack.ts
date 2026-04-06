@@ -144,11 +144,11 @@ export class CICDPipelineStack extends cdk.Stack {
     });
 
     // Grant CodePipeline permission to use CodeStar connection
-    const connectionArn = `arn:aws:codestar-connections:${this.region}:${this.account}:connection/73067a58-2dea-4435-90eb-f7438751ca45`;
+    const connectionArn = `arn:aws:codeconnections:${this.region}:${this.account}:connection/eb72eea9-bd59-46f0-9215-4760020dcbbc`;
     
     pipeline.role.addToPrincipalPolicy(
       new iam.PolicyStatement({
-        actions: ['codestar-connections:UseConnection'],
+        actions: ['codeconnections:UseConnection'],
         resources: [connectionArn],
         effect: iam.Effect.ALLOW,
       })
