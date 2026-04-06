@@ -100,21 +100,6 @@ export class CICDPipelineStack extends cdk.Stack {
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.SOURCE),
     });
 
-    // Grant CodeBuild direct S3 permissions to CDK assets bucket
-    buildProject.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: [
-          's3:GetObject',
-          's3:PutObject',
-          's3:ListBucket',
-        ],
-        resources: [
-          `arn:aws:s3:::cdk-hnb659fds-assets-${this.account}-${this.region}`,
-          `arn:aws:s3:::cdk-hnb659fds-assets-${this.account}-${this.region}/*`,
-        ],
-      })
-    );
-
     // Integration Test Project
     const integrationTestProject = new codebuild.PipelineProject(this, 'IntegrationTestProject', {
       projectName: 'iot-proximity-integration-tests',
@@ -230,6 +215,11 @@ export class CICDPipelineStack extends cdk.Stack {
             cdk.CfnCapabilities.NAMED_IAM,
             cdk.CfnCapabilities.AUTO_EXPAND,
           ],
+          parameterOverrides: {
+            LambdaCodeBucket: artifactBucket.bucketName,
+            LambdaCodeKey: buildOutput.objectKey + '/lambda-package.zip',
+          },
+          extraInputs: [buildOutput],
           runOrder: 2,
         }),
       ],
@@ -295,6 +285,11 @@ export class CICDPipelineStack extends cdk.Stack {
             cdk.CfnCapabilities.NAMED_IAM,
             cdk.CfnCapabilities.AUTO_EXPAND,
           ],
+          parameterOverrides: {
+            LambdaCodeBucket: artifactBucket.bucketName,
+            LambdaCodeKey: buildOutput.objectKey + '/lambda-package.zip',
+          },
+          extraInputs: [buildOutput],
           runOrder: 2,
         }),
       ],

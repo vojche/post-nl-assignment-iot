@@ -40,6 +40,16 @@ export interface IoTProximityAlertStackProps extends cdk.StackProps {
    * Environment name (acceptance, production)
    */
   environment?: string;
+
+  /**
+   * S3 bucket containing Lambda code (optional, for pipeline deployments)
+   */
+  lambdaCodeBucket?: string;
+
+  /**
+   * S3 key for Lambda code (optional, for pipeline deployments)
+   */
+  lambdaCodeKey?: string;
 }
 
 export class IoTProximityAlertStack extends cdk.Stack {
@@ -50,6 +60,22 @@ export class IoTProximityAlertStack extends cdk.Stack {
     const vehicleHandheldTableName = props?.vehicleHandheldTableName || 'Vehicle2HandheldTable';
     const notificationTopicArn = props?.notificationTopicArn || 
       `arn:aws:sns:${this.region}:${this.account}:Platform_Notification_Topic`;
+
+    // CloudFormation parameters for pipeline deployments
+    const lambdaCodeBucketParam = new cdk.CfnParameter(this, 'LambdaCodeBucket', {
+      type: 'String',
+      default: '',
+      description: 'S3 bucket containing Lambda code (leave empty for local deployments)',
+    });
+
+    const lambdaCodeKeyParam = new cdk.CfnParameter(this, 'LambdaCodeKey', {
+      type: 'String',
+      default: '',
+      description: 'S3 key for Lambda code (leave empty for local deployments)',
+    });
+
+    const lambdaCodeBucket = props?.lambdaCodeBucket || lambdaCodeBucketParam.valueAsString;
+    const lambdaCodeKey = props?.lambdaCodeKey || lambdaCodeKeyParam.valueAsString;
 
     // ========================================
     // S3 Buckets
@@ -212,11 +238,19 @@ export class IoTProximityAlertStack extends cdk.Stack {
     // Lambda Function
     // ========================================
 
+    // Determine Lambda code source
+    const lambdaCode = lambdaCodeBucket && lambdaCodeKey
+      ? lambda.Code.fromBucket(
+          s3.Bucket.fromBucketName(this, 'LambdaCodeBucket', lambdaCodeBucket),
+          lambdaCodeKey
+        )
+      : lambda.Code.fromAsset('./dist'); // Fallback for local deployments
+
     const batchProcessor = new lambda.Function(this, 'BatchProcessor', {
       functionName: `iot-proximity-batch-processor-${environment}`,
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'src/index.handler',
-      code: lambda.Code.fromAsset('./dist'), // Uses pre-built dist with node_modules
+      code: lambdaCode,
       memorySize: 3008, // 3 GB - sufficient for batch processing 23M events
       timeout: cdk.Duration.seconds(900), // 15 minutes
       architecture: lambda.Architecture.X86_64,
