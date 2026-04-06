@@ -45,10 +45,8 @@ phases:
       - cdk synth --all -c environment=production --output cdk.out.production
       - echo "Organizing CDK outputs..."
       - mkdir -p cdk.out
-      - cp cdk.out.acceptance/*.template.json cdk.out/
-      - cp cdk.out.production/*.template.json cdk.out/
-      - echo "Verifying templates..."
-      - ls -la cdk.out/*.template.json
+      - cp -r cdk.out.acceptance/* cdk.out/
+      - cp -r cdk.out.production/* cdk.out/
       - echo "Build completed successfully"
 
 artifacts:
