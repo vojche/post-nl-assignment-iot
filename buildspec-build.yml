@@ -29,7 +29,7 @@ phases:
   build:
     commands:
       - echo "Running all tests with coverage..."
-      - npm test -- --coverage --coverageReporters=text --coverageReporters=lcov --maxWorkers=50%
+      - npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
       
   post_build:
     commands:
