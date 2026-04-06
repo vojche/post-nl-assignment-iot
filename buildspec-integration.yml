@@ -36,10 +36,13 @@ phases:
       - aws lambda invoke --function-name iot-proximity-batch-processor-$ENVIRONMENT --payload '{"processingDate":"2024-01-15"}' response.json
       - cat response.json
       - echo "Verifying S3 buckets..."
-      - aws s3 ls s3://iot-proximity-events-$AWS_ACCOUNT_ID-$ENVIRONMENT/ || echo "Event bucket not yet populated"
-      - aws s3 ls s3://iot-proximity-reports-$AWS_ACCOUNT_ID-$ENVIRONMENT/ || echo "Report bucket not yet populated"
+      - export EVENT_BUCKET=$(aws cloudformation describe-stacks --stack-name IoTProximityAlertStack-$ENVIRONMENT --query "Stacks[0].Outputs[?OutputKey=='EventBucketName'].OutputValue" --output text)
+      - export REPORT_BUCKET=$(aws cloudformation describe-stacks --stack-name IoTProximityAlertStack-$ENVIRONMENT --query "Stacks[0].Outputs[?OutputKey=='ReportBucketName'].OutputValue" --output text)
+      - aws s3 ls s3://$EVENT_BUCKET/ || echo "Event bucket not yet populated"
+      - aws s3 ls s3://$REPORT_BUCKET/ || echo "Report bucket not yet populated"
       - echo "Verifying DynamoDB table..."
-      - aws dynamodb describe-table --table-name Vehicle2HandheldTable-$ENVIRONMENT
+      - export TABLE_NAME=$(aws cloudformation describe-stacks --stack-name ExistingInfrastructureStack-$ENVIRONMENT --query "Stacks[0].Outputs[?OutputKey=='VehicleHandheldTableName'].OutputValue" --output text)
+      - aws dynamodb describe-table --table-name $TABLE_NAME || echo "Table not found"
       - echo "Integration tests completed"
       
   post_build:
