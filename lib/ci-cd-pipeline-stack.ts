@@ -201,18 +201,12 @@ export class CICDPipelineStack extends cdk.Stack {
           stackName: 'ExistingInfrastructureStack-acceptance',
           templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-acceptance.template.json'),
           adminPermissions: true,
-          parameterOverrides: {
-            environment: 'acceptance',
-          },
         }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-acceptance',
           templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-acceptance.template.json'),
           adminPermissions: true,
-          parameterOverrides: {
-            environment: 'acceptance',
-          },
           runOrder: 2,
         }),
       ],
@@ -264,18 +258,12 @@ export class CICDPipelineStack extends cdk.Stack {
           stackName: 'ExistingInfrastructureStack-production',
           templatePath: cdkOutput.atPath('cdk.out/ExistingInfrastructureStack-production.template.json'),
           adminPermissions: true,
-          parameterOverrides: {
-            environment: 'production',
-          },
         }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Deploy_IoT_Stack',
           stackName: 'IoTProximityAlertStack-production',
           templatePath: cdkOutput.atPath('cdk.out/IoTProximityAlertStack-production.template.json'),
           adminPermissions: true,
-          parameterOverrides: {
-            environment: 'production',
-          },
           runOrder: 2,
         }),
       ],
