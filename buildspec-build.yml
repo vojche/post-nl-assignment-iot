@@ -39,11 +39,14 @@ phases:
       - cp -r node_modules dist/
       - cp package.json dist/
       - cd dist && zip -r ../lambda-package.zip . -x "*.test.*" "*.spec.*" && cd ..
-      - echo "Synthesizing CDK templates..."
-      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance &
-      - cdk synth --all -c environment=production --output cdk.out.production &
-      - wait
-      - mkdir -p cdk.out && cp -r cdk.out.acceptance/* cdk.out/ && cp -r cdk.out.production/* cdk.out/
+      - echo "Synthesizing CDK templates for acceptance..."
+      - cdk synth --all -c environment=acceptance --output cdk.out.acceptance
+      - echo "Synthesizing CDK templates for production..."
+      - cdk synth --all -c environment=production --output cdk.out.production
+      - echo "Combining CDK outputs..."
+      - mkdir -p cdk.out
+      - cp -r cdk.out.acceptance/* cdk.out/
+      - cp -r cdk.out.production/* cdk.out/
       - echo "Build completed successfully"
 
 artifacts:
