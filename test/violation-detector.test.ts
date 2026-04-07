@@ -54,7 +54,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       // Build vehicle state timeline
@@ -101,7 +101,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -141,7 +141,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -182,7 +182,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       // Empty vehicle timeline (no vehicle events)
@@ -222,7 +222,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -278,7 +278,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -311,7 +311,7 @@ describe('ViolationDetector', () => {
       ];
 
       const mappings = new Map<string, string>([
-        ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+        ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
       ]);
 
       const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -322,3 +322,4 @@ describe('ViolationDetector', () => {
     });
   });
 });
+

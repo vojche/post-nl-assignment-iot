@@ -76,7 +76,7 @@ describe('Violation Detection - Property Tests', () => {
             ];
 
             const mappings = new Map<string, string>([
-              ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+              ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
             ]);
 
             const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -151,7 +151,7 @@ describe('Violation Detection - Property Tests', () => {
               },
             ];
 
-            const mappings = new Map<string, string>([[vehicleId, handheldId]]);
+            const mappings = new Map<string, string>([[handheldId, vehicleId]]);
 
             const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
             const violations = violationDetector.detectViolations(handheldEvents, vehicleTimeline, mappings);
@@ -235,7 +235,7 @@ describe('Violation Detection - Property Tests', () => {
             ];
 
             const mappings = new Map<string, string>([
-              ['VV-AA-AA-AA-01', 'HH-BB-BB-BB-01'],
+              ['HH-BB-BB-BB-01', 'VV-AA-AA-AA-01'],
             ]);
 
             const vehicleTimeline = vehicleStateAnalyzer.buildStateTimeline(vehicleEvents);
@@ -287,3 +287,4 @@ function moveCoordinates(
 
   return { latitude, longitude };
 }
+

@@ -57,7 +57,7 @@ describe('Property Test: Mapping Lookup Correctness', () => {
           // Build expected mappings (last occurrence wins for duplicate vehicleIds)
           const expectedMappings = new Map<string, string>();
           for (const mapping of mappings) {
-            expectedMappings.set(mapping.vehicleId, mapping.handheldId);
+            expectedMappings.set(mapping.handheldId, mapping.vehicleId);
           }
 
           // Verify: All mappings are loaded correctly
@@ -134,8 +134,8 @@ describe('Property Test: Mapping Lookup Correctness', () => {
             return false;
           }
 
-          for (const [vehicleId, handheldId] of loadedMappings1) {
-            if (loadedMappings2.get(vehicleId) !== handheldId) {
+          for (const [handheldId, vehicleId] of loadedMappings1) {
+            if (loadedMappings2.get(handheldId) !== vehicleId) {
               return false;
             }
           }
@@ -173,3 +173,4 @@ describe('Property Test: Mapping Lookup Correctness', () => {
     );
   });
 });
+

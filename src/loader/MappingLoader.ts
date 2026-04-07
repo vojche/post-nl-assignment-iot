@@ -4,6 +4,9 @@
  * Scans Vehicle2HandheldTable and loads all mappings into an in-memory Map
  * for O(1) lookups during batch processing.
  * 
+ * Returns mapping in the direction needed for processing: handheldId → vehicleId
+ * (reverse of DynamoDB table structure for efficient lookups)
+ * 
  * **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
  */
 
@@ -17,7 +20,7 @@ export interface IMappingLoader {
   /**
    * Load all vehicle-handheld mappings from DynamoDB
    * Handles pagination automatically
-   * @returns Map of vehicleId to handheldId
+   * @returns Map of handheldId to vehicleId (reverse of table structure for efficient lookups)
    */
   loadAllMappings(): Promise<Map<string, string>>;
 }
@@ -66,10 +69,12 @@ export class MappingLoader implements IMappingLoader {
               const unmarshalled = unmarshall(item);
               
               // Extract vehicleId and handheldId
+              // Store as handheldId → vehicleId (reverse of table structure)
+              // This matches our lookup pattern: given handheldId, find vehicleId
               if (unmarshalled.vehicleId && unmarshalled.handheldId) {
                 mappings.set(
-                  unmarshalled.vehicleId as string,
-                  unmarshalled.handheldId as string
+                  unmarshalled.handheldId as string,  // KEY: handheldId
+                  unmarshalled.vehicleId as string    // VALUE: vehicleId
                 );
               } else {
                 console.warn(`[MappingLoader] Skipping item with missing fields:`, unmarshalled);

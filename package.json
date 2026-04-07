@@ -55,6 +55,7 @@
     "@aws-sdk/client-sqs": "^3.1024.0",
     "@aws-sdk/lib-dynamodb": "^3.709.0",
     "@aws-sdk/util-dynamodb": "^3.996.2",
+    "@faker-js/faker": "^10.4.0",
     "aws-cdk-lib": "^2.172.0",
     "aws-xray-sdk-core": "^3.12.0",
     "constructs": "^10.4.2",

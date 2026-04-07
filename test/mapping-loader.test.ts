@@ -40,9 +40,9 @@ describe('MappingLoader', () => {
 
       // Verify
       expect(mappings.size).toBe(3);
-      expect(mappings.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
-      expect(mappings.get('VV-AA-AA-AA-02')).toBe('HH-BB-BB-BB-02');
-      expect(mappings.get('VV-AA-AA-AA-03')).toBe('HH-BB-BB-BB-03');
+      expect(mappings.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
+      expect(mappings.get('HH-BB-BB-BB-02')).toBe('VV-AA-AA-AA-02');
+      expect(mappings.get('HH-BB-BB-BB-03')).toBe('VV-AA-AA-AA-03');
     });
 
     it('should handle pagination with multiple scan responses', async () => {
@@ -75,10 +75,10 @@ describe('MappingLoader', () => {
 
       // Verify: All mappings from both pages are loaded
       expect(mappings.size).toBe(4);
-      expect(mappings.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
-      expect(mappings.get('VV-AA-AA-AA-02')).toBe('HH-BB-BB-BB-02');
-      expect(mappings.get('VV-AA-AA-AA-03')).toBe('HH-BB-BB-BB-03');
-      expect(mappings.get('VV-AA-AA-AA-04')).toBe('HH-BB-BB-BB-04');
+      expect(mappings.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
+      expect(mappings.get('HH-BB-BB-BB-02')).toBe('VV-AA-AA-AA-02');
+      expect(mappings.get('HH-BB-BB-BB-03')).toBe('VV-AA-AA-AA-03');
+      expect(mappings.get('HH-BB-BB-BB-04')).toBe('VV-AA-AA-AA-04');
 
       // Verify: Scan was called twice
       expect(dynamoMock.calls().length).toBe(2);
@@ -104,7 +104,7 @@ describe('MappingLoader', () => {
 
       // Verify: Mappings loaded successfully after retry
       expect(mappings.size).toBe(1);
-      expect(mappings.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
+      expect(mappings.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
 
       // Verify: Scan was called twice (1 failure + 1 success)
       expect(dynamoMock.calls().length).toBe(2);
@@ -162,9 +162,9 @@ describe('MappingLoader', () => {
 
       // Verify: Only valid items are loaded
       expect(mappings.size).toBe(2);
-      expect(mappings.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
-      expect(mappings.get('VV-AA-AA-AA-04')).toBe('HH-BB-BB-BB-04');
-      expect(mappings.get('VV-AA-AA-AA-02')).toBeUndefined();
+      expect(mappings.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
+      expect(mappings.get('HH-BB-BB-BB-04')).toBe('VV-AA-AA-AA-04');
+      expect(mappings.get('HH-BB-BB-BB-02')).toBeUndefined();
     });
 
     it('should only perform read operations (no writes to table)', async () => {

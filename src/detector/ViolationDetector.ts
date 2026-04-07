@@ -19,7 +19,7 @@ export interface IViolationDetector {
    * Detect proximity violations for handheld events
    * @param handheldEvents - Array of handheld events
    * @param vehicleStateTimeline - Map of vehicle state timelines
-   * @param mappings - Map of vehicleId to handheldId
+   * @param mappings - Map of handheldId to vehicleId
    * @returns Array of proximity violations
    */
   detectViolations(
@@ -33,7 +33,7 @@ export interface IViolationDetector {
  * ViolationDetector implementation
  * 
  * For each handheld event:
- * 1. Get paired vehicle ID from mappings
+ * 1. Get paired vehicle ID from mappings (handheldId → vehicleId)
  * 2. Get vehicle state at event timestamp
  * 3. Skip distance calculation if vehicle is MOVING (optimization)
  * 4. Calculate distance if vehicle is PARKED
@@ -65,8 +65,8 @@ export class ViolationDetector implements IViolationDetector {
     const violations: ProximityViolation[] = [];
 
     for (const handheldEvent of handheldEvents) {
-      // Get paired vehicle ID from mappings
-      const vehicleId = this.findVehicleForHandheld(handheldEvent.deviceId, mappings);
+      // Get paired vehicle ID from mappings (handheldId → vehicleId, O(1) lookup)
+      const vehicleId = mappings.get(handheldEvent.deviceId);
 
       if (!vehicleId) {
         console.warn(`[ViolationDetector] No vehicle mapping found for handheld ${handheldEvent.deviceId}`);
@@ -119,18 +119,5 @@ export class ViolationDetector implements IViolationDetector {
 
     console.log(`[ViolationDetector] Detected ${violations.length} proximity violations`);
     return violations;
-  }
-
-  /**
-   * Find vehicle ID for a given handheld ID
-   * Searches mappings in reverse (handheldId -> vehicleId)
-   */
-  private findVehicleForHandheld(handheldId: string, mappings: Map<string, string>): string | null {
-    for (const [vehicleId, mappedHandheldId] of mappings.entries()) {
-      if (mappedHandheldId === handheldId) {
-        return vehicleId;
-      }
-    }
-    return null;
   }
 }

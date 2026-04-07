@@ -47,7 +47,7 @@ describe('Error Handling Tests', () => {
       const result = await mappingLoader.loadAllMappings();
 
       expect(result.size).toBe(1);
-      expect(result.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
+      expect(result.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
       expect(dynamoMock.calls()).toHaveLength(2);
     });
 
@@ -120,8 +120,8 @@ describe('Error Handling Tests', () => {
       const result = await mappingLoader.loadAllMappings();
 
       expect(result.size).toBe(2);
-      expect(result.get('VV-AA-AA-AA-01')).toBe('HH-BB-BB-BB-01');
-      expect(result.get('VV-AA-AA-AA-02')).toBe('HH-BB-BB-BB-02');
+      expect(result.get('HH-BB-BB-BB-01')).toBe('VV-AA-AA-AA-01');
+      expect(result.get('HH-BB-BB-BB-02')).toBe('VV-AA-AA-AA-02');
       expect(dynamoMock.calls()).toHaveLength(3);
     });
   });

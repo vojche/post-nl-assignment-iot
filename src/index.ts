@@ -116,7 +116,7 @@ export async function handler(event: HandlerEvent): Promise<HandlerResponse> {
       s3BucketName: REPORT_BUCKET_NAME,
     });
 
-    // Phase 0: Load vehicle-handheld mappings
+    // Phase 0: Load vehicle-handheld mappings (handheldId → vehicleId)
     console.log('[Handler] Phase 0: Loading vehicle-handheld mappings');
     const mappings = isTestEnvironment
       ? await mappingLoader.loadAllMappings()
