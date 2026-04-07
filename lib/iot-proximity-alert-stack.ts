@@ -189,6 +189,7 @@ export class IoTProximityAlertStack extends cdk.Stack {
         prefix: 'events/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
         errorOutputPrefix: 'errors/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
         compressionFormat: 'GZIP',
+        fileExtension: '.json.gz',
         bufferingHints: {
           sizeInMBs: 5,
           intervalInSeconds: 300,
